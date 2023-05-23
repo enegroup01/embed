@@ -24,7 +24,6 @@ app = Flask(__name__)
 line_bot_api = LineBotApi(os.environ['CHANNEL_ACCESS_TOKEN'])
 handler = WebhookHandler(os.environ['CHANNEL_SECRET'])
 parser = WebhookParser(os.environ['CHANNEL_SECRET'])
-yourID = 'Ued7ae416eb03f3295c1a6600fda84b9e'
 
 # openai vars
 # models

@@ -25,7 +25,6 @@ app = Flask(__name__)
 line_bot_api = LineBotApi(os.environ['CHANNEL_ACCESS_TOKEN'])
 handler = WebhookHandler(os.environ['CHANNEL_SECRET'])
 parser = WebhookParser(os.environ['CHANNEL_SECRET'])
-yourID = 'Ued7ae416eb03f3295c1a6600fda84b9e'
 
 index = None
 eatEnjoyImageUrl = 'https://scontent.ftpe7-2.fna.fbcdn.net/v/t39.30808-6/287060490_1450234702064967_2189301953826091703_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=pXBveza6NOcAX_g_l00&_nc_ht=scontent.ftpe7-2.fna&oh=00_AfDxCEKDpv4WbAHV_KbVz0ndRSLlN1wLVOsPZXPQcPsaGg&oe=645BD6A6'

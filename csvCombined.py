@@ -1,7 +1,7 @@
 import csv
 
-input_datapath = "eatEnjoy.csv"
-output_file = 'combined.csv'
+input_datapath = "csv/eatEnjoy2-2.csv"
+output_file = 'combined/combined2-2.csv'
 
 with open(input_datapath, 'r') as infile, open(output_file, 'w', newline='') as outfile:
     reader = csv.DictReader(infile)

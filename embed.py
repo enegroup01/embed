@@ -20,7 +20,7 @@ cred = credentials.Certificate("serviceAccountKey.json")
 firebase_admin.initialize_app(
     cred, {'databaseURL': 'https://linebot-93aa8-default-rtdb.asia-southeast1.firebasedatabase.app/'})
 
-ref = db.reference('apiKey/')
+ref = db.reference('testApiKey/')
 
 while True:
     gptApiKey = ref.get()
@@ -29,9 +29,10 @@ while True:
     time.sleep(1)  # Wait for 1 second before checking again
 openai.api_key = gptApiKey
 
-input_datapath = 'combined.csv'
+input_datapath = 'combined/.csv'
 df = pd.read_csv(input_datapath, index_col=0)
 
 df["embedding"] = df.combined.apply(
     lambda x: get_embedding(x, engine=embedding_model))
-df.to_csv("myEmbeddedModel.csv")
+df.to_csv("model/.csv")
+# df.to_csv("chunks/.csv")

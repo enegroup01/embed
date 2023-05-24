@@ -1,10 +1,10 @@
 import pandas as pd
 
 # Specify the input XLSX file path
-input_file = 'eatEnjoy.xlsx'
+input_file = 'excel/eatEnjoy2-2.xlsx'
 
 # Specify the output CSV file path
-output_file = 'eatEnjoy.csv'
+output_file = 'csv/eatEnjoy2-2.csv'
 
 # Read the XLSX file
 data_frame = pd.read_excel(input_file)

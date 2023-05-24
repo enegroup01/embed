@@ -18,7 +18,7 @@ cred = credentials.Certificate("serviceAccountKey.json")
 firebase_admin.initialize_app(
     cred, {'databaseURL': 'https://linebot-93aa8-default-rtdb.asia-southeast1.firebasedatabase.app/'})
 
-ref = db.reference('apiKey/')
+ref = db.reference('testApiKey/')
 memberRef = db.reference('members/')
 
 while True:
@@ -33,7 +33,7 @@ openai.api_key = gptApiKey
 EMBEDDING_MODEL = "text-embedding-ada-002"
 GPT_MODEL = "gpt-3.5-turbo"
 
-embeddings_path = "myEmbeddedModel.csv"
+embeddings_path = "wholeEmbed.csv"
 
 df = pd.read_csv(embeddings_path)
 df['embedding'] = df['embedding'].apply(ast.literal_eval)

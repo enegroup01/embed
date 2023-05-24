@@ -12,7 +12,7 @@ def num_tokens_from_string(string: str, encoding_name: str) -> int:
 
 def countFromCSV():
     total_tokens = 0
-    with open('combined.csv', 'r', encoding='utf-8') as file:
+    with open('combinedOnly.csv', 'r', encoding='utf-8') as file:
         csv_reader = csv.DictReader(file)
         for row in csv_reader:
             text = row['combined']

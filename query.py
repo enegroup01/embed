@@ -33,7 +33,8 @@ openai.api_key = gptApiKey
 EMBEDDING_MODEL = "text-embedding-ada-002"
 GPT_MODEL = "gpt-3.5-turbo"
 
-embeddings_path = "wholeEmbed.csv"
+embeddings_path = "model/chunksEmbeddedModel.csv"
+myProfileId = 'Ued7ae416eb03f3295c1a6600fda84b9e'
 
 df = pd.read_csv(embeddings_path)
 df['embedding'] = df['embedding'].apply(ast.literal_eval)
@@ -102,7 +103,7 @@ def query_message(
     """Return a message for GPT, with relevant source texts pulled from a dataframe."""
     strings, relatednesses = strings_ranked_by_relatedness(query, df)
 
-    introduction = 'Use the below information to answer the subsequent question in traditional chinese. If there an image link, please recommend it.'
+    introduction = 'Use the below information to answer the subsequent question in traditional chinese. Be concise'
     question = f"\n\nQuestion: {query}"
     message = introduction
     for string in strings:
@@ -124,8 +125,6 @@ def ask(
     token_budget: int = 4096 - 500,
     print_message: bool = False,
 ) -> str:
-
-    # getConversation()
     """Answers a query using GPT and a dataframe of relevant texts and embeddings."""
     message = query_message(query, df, model=model, token_budget=token_budget)
     if print_message:
@@ -133,7 +132,7 @@ def ask(
         print(message)
 
     messages = [
-        {"role": "system", "content": "You are a helpful assistant that helps answer questions about the restaurant."}
+        {"role": "system", "content": "You are a helpful assistant that helps answer questions about the restaurant. Be concise."}
     ]
     if memberRef.child('Ued7ae416eb03f3295c1a6600fda84b9e').get() is not None:
         print('*==== I have profile')
@@ -157,6 +156,8 @@ def ask(
             'timestamp').limit_to_last(8).get()
         jsonChats = json.dumps(latest_chats)
         data_dict = json.loads(jsonChats)
+        print('*===============finish json work================*')
+        print(data_dict)
 
         for _, chat_data in data_dict.items():
             role = chat_data["role"]
@@ -193,63 +194,22 @@ def ask(
 
     response_message = response["choices"][0]["message"]["content"]
     # print(response_message)
+    uploadConversation(query, myProfileId, response_message)
 
     print(has_image_link(response_message))
     return response_message
     # return "testing"
 
 
-# print(ask((myQuestion)))
-def getConversation():
-    if memberRef.child('Ued7ae416eb03f3295c1a6600fda84b9e').get() is not None:
-        print('*==== I have profile')
-        # userChatRef = memberRef.child(profileId + '/chats')
-        # query = userChatRef.order_by_child('timestamp').start_at(
-        #     one_week_ago.timestamp() * 1000)
-        # formatted_messages = []
-        # for _, value in query.get().items():
-        #     formatted_message = f"{value['role']}: {value['content'].strip()}"
-        #     formatted_messages.append(formatted_message)
-        # result_string = ", ".join(formatted_messages)
-        # messagesToAsk = result_string
-        # if userChatRef.get() is not None:
-        #     # in case has no chats
-        #     chat_length = len(userChatRef.get())
-        # else:
-        #     chat_length = 0
-
-        # (2) when query by last 8 question
-        latest_chats = memberRef.child('Ued7ae416eb03f3295c1a6600fda84b9e' + '/chats').order_by_child(
-            'timestamp').limit_to_last(8).get()
-        jsonChats = json.dumps(latest_chats)
-        data_dict = json.loads(jsonChats)
-
-        messages = [
-            {"role": "system", "content": "You are a helpful assistant that helps answer questions about the restaurant."}
-        ]
-        for _, chat_data in data_dict.items():
-            role = chat_data["role"]
-            content = chat_data["content"]
-            if role == "question":
-                messages.append(
-                    {"role": "user", "content": content})
-            elif role == "answer":
-                messages.append(
-                    {"role": "assistant", "content": content})
-        print("*==== got message")
-        print(messages)
-
-        # result = ', '.join(
-        #     [f"{value['role']}: {value['content']}" for value in data_dict.values()])
-        # if need conversation history
-        # messagesToAsk = result
-        # print('*===conversation history')
-        # print(result)
-    else:
-        messagesToAsk = ''
-        chat_length = 0
-        # uploadProfile(profile=profile)
-    return
+def uploadConversation(query, profileId, aiResponse):
+    timestamp = int(time.time() * 1000)
+    updatedAskMessage = {"role": "user",
+                         "content": query, "timestamp": timestamp}
+    memberRef.child(profileId + '/chats').push(updatedAskMessage)
+    timestamp = int(time.time() * 1000)
+    updatedAnswerMessage = {"role": "assistant",
+                            "content": aiResponse, "timestamp": timestamp}
+    memberRef.child(profileId + '/chats').push(updatedAnswerMessage)
 
 
 def answerMe(question):
